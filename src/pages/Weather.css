@@ -1,55 +1,71 @@
+@import "leaflet/dist/leaflet.css";
+
 .weather-container {
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 30px;
-    background-color: #f4f4f4;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .weather-container input {
-    padding: 10px;
-    width: 60%;
-    font-size: 16px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    border: 1px solid #aaa;
-  }
-  
-  .weather-container button {
-    padding: 10px 15px;
-    margin: 5px;
-    font-size: 14px;
-    border: none;
-    background-color: #4285f4;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .weather-container button:hover {
-    background-color: #3367d6;
-  }
-  
-  .weather-info {
-    margin-top: 20px;
-    font-size: 18px;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 10px;
-  }
-  
-  body.dark .weather-container {
-    background-color: #2a2a2a;
-    color: white;
-  }
-  
-  body.dark .weather-container input {
-    background-color: #444;
-    color: white;
-    border-color: #666;
-  }
-  
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #f4f4f4;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.weather-container input {
+  padding: 10px;
+  width: 60%;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #aaa;
+}
+
+.weather-container button {
+  padding: 10px 15px;
+  margin: 5px;
+  font-size: 14px;
+  border: none;
+  background-color: #4285f4;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.weather-container button:hover {
+  background-color: #3367d6;
+}
+
+.weather-info {
+  margin-top: 20px;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1;
+}
+
+.weather-info .map-wrapper {
+  margin-top: 20px;
+}
+
+.weather-info .leaflet-container {
+  height: 300px;
+  width: 100%;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+body.dark .weather-container {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+body.dark .weather-container input {
+  background-color: #444;
+  color: white;
+  border-color: #666;
+}

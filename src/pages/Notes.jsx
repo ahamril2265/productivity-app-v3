@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setNoteText } from '../redux/slices/notesSlice';
 import './Notes.css';
 
 function Notes() {
-  const [text, setText] = useState('');
+  const text = useSelector((state) => state.notes.text);
+  const dispatch = useDispatch();
 
-  // Load saved note on mount
   useEffect(() => {
-    const savedNote = localStorage.getItem('myNote');
-    if (savedNote) {
-      setText(savedNote);
-    }
-  }, []);
+    const saved = localStorage.getItem('myNote');
+    if (saved) dispatch(setNoteText(saved));
+  }, [dispatch]);
 
-  // Save note on change
   useEffect(() => {
     localStorage.setItem('myNote', text);
   }, [text]);
@@ -22,7 +21,7 @@ function Notes() {
       <h2>📝 Notes</h2>
       <textarea
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => dispatch(setNoteText(e.target.value))}
         placeholder="Type your notes here..."
       ></textarea>
       <p className="autosave-hint">✨ Your notes are automatically saved.</p>

@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setCity,
+  setWeatherData,
+  setError,
+  clearWeather,
+} from '../redux/slices/weatherSlice';
+
 import './Weather.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 
 function Weather() {
-  const [city, setCity] = useState('');
-  const [weatherData, setWeatherData] = useState(null);
-  const [error, setError] = useState('');
-
-  const API_KEY = '5c6b4244e151f8b23fa55d68f135abcb';
+  const dispatch = useDispatch();
+  const { city, weatherData, error } = useSelector((state) => state.weather);
+  const API_KEY = '5c6b4244e151f8b23fa55d68f135abcb'; // Replace with your key
 
   const fetchWeather = async () => {
-    if (!city) return;
+    if (!city.trim()) return;
     try {
       const res = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
       );
       if (!res.ok) throw new Error('City not found');
       const data = await res.json();
-      setWeatherData(data);
-      setError('');
+      dispatch(setWeatherData(data));
+      dispatch(setError(''));
     } catch (err) {
-      setWeatherData(null);
-      setError(err.message);
+      dispatch(setError(err.message));
+      dispatch(setWeatherData(null));
     }
-  };
-
-  const handleReset = () => {
-    setCity('');
-    setWeatherData(null);
-    setError('');
   };
 
   const customIcon = new L.Icon({
@@ -45,34 +45,39 @@ function Weather() {
         type="text"
         placeholder="Enter city name..."
         value={city}
-        onChange={(e) => setCity(e.target.value)}
+        onChange={(e) => dispatch(setCity(e.target.value))}
       />
       <button onClick={fetchWeather}>Get Weather</button>
-      <button onClick={handleReset}>Clear</button>
+      <button onClick={() => dispatch(clearWeather())}>Clear</button>
 
       {error && <p className="error">{error}</p>}
 
       {weatherData && (
         <div className="weather-info">
-          <h3>{weatherData.name}, {weatherData.sys.country}</h3>
+          <h3>
+            {weatherData.name}, {weatherData.sys.country}
+          </h3>
           <p>🌡 Temp: {weatherData.main.temp} °C</p>
           <p>💧 Humidity: {weatherData.main.humidity}%</p>
           <p>☁️ Condition: {weatherData.weather[0].description}</p>
 
-          <div className="map-container">
+          <div className="map-wrapper">
             <MapContainer
               center={[weatherData.coord.lat, weatherData.coord.lon]}
               zoom={10}
               scrollWheelZoom={false}
-              style={{ height: "300px", width: "100%", marginTop: "20px", borderRadius: "8px" }}
+              style={{ height: '300px', width: '100%', borderRadius: '8px' }}
             >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+                attribution='&copy; OpenStreetMap contributors'
               />
-              <Marker position={[weatherData.coord.lat, weatherData.coord.lon]} icon={customIcon}>
+              <Marker
+                position={[weatherData.coord.lat, weatherData.coord.lon]}
+                icon={customIcon}
+              >
                 <Popup>
-                  {weatherData.name}<br />{weatherData.weather[0].description}
+                  {weatherData.name} - {weatherData.weather[0].main}
                 </Popup>
               </Marker>
             </MapContainer>

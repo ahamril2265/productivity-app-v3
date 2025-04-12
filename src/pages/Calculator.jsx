@@ -13,36 +13,39 @@ function Calculator() {
       setResult('');
     } else if (value === '=') {
       try {
-        const safeResult = computeExpression(input);
-        setResult(safeResult);
+        const output = evaluateExpression(input);
+        setResult(output);
       } catch {
         setResult('Error');
       }
     } else {
       const lastChar = input[input.length - 1];
-      if (isOperator(value) && isOperator(lastChar)) return; // Prevent chaining ops
+      if (isOperator(value) && isOperator(lastChar)) return; // avoid duplicate ops
       setInput(input + value);
+      setResult('');
     }
   };
 
-  const computeExpression = (exp) => {
-    const tokens = exp.split(/([+\-*/])/).filter(Boolean);
-    let current = parseFloat(tokens[0]);
+  const evaluateExpression = (expr) => {
+    const tokens = expr.split(/([+\-*/])/).filter(token => token.trim() !== '');
+    if (tokens.length < 3) return expr;
+
+    let result = parseFloat(tokens[0]);
 
     for (let i = 1; i < tokens.length; i += 2) {
-      const op = tokens[i];
-      const next = parseFloat(tokens[i + 1]);
-      if (isNaN(next)) throw Error('Invalid');
-      switch (op) {
-        case '+': current += next; break;
-        case '-': current -= next; break;
-        case '*': current *= next; break;
-        case '/': current /= next; break;
-        default: throw Error('Invalid operator');
+      const operator = tokens[i];
+      const nextValue = parseFloat(tokens[i + 1]);
+
+      switch (operator) {
+        case '+': result += nextValue; break;
+        case '-': result -= nextValue; break;
+        case '*': result *= nextValue; break;
+        case '/': result /= nextValue; break;
+        default: throw new Error("Invalid expression");
       }
     }
 
-    return current.toString();
+    return result.toString();
   };
 
   const buttons = [
@@ -56,7 +59,11 @@ function Calculator() {
   return (
     <div className="calculator-container">
       <h2>🧮 Calculator</h2>
-      <input className="calculator-display" value={input || result} readOnly />
+      <input
+        className="calculator-display"
+        value={result || input}
+        readOnly
+      />
       <div className="calculator-buttons">
         {buttons.map((btn, index) => (
           <button key={index} onClick={() => handleClick(btn)}>{btn}</button>

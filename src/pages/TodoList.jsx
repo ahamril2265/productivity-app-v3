@@ -1,39 +1,28 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addTask, deleteTask, toggleComplete, setTasks } from '../redux/slices/todoSlice';
 import './TodoList.css';
 
 function TodoList() {
-  const [tasks, setTasks] = useState([]);
+  const tasks = useSelector((state) => state.todo.tasks);
+  const dispatch = useDispatch();
   const [input, setInput] = useState('');
 
-  // Load tasks from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem('myTasks');
     if (saved) {
-      setTasks(JSON.parse(saved));
+      dispatch(setTasks(JSON.parse(saved)));
     }
-  }, []);
+  }, [dispatch]);
 
-  // Save tasks to localStorage on update
   useEffect(() => {
     localStorage.setItem('myTasks', JSON.stringify(tasks));
   }, [tasks]);
 
-  const addTask = () => {
+  const handleAdd = () => {
     if (input.trim() === '') return;
-    setTasks([...tasks, { text: input, completed: false }]);
+    dispatch(addTask(input));
     setInput('');
-  };
-
-  const toggleComplete = (index) => {
-    const newTasks = [...tasks];
-    newTasks[index].completed = !newTasks[index].completed;
-    setTasks(newTasks);
-  };
-
-  const deleteTask = (index) => {
-    const newTasks = tasks.filter((_, i) => i !== index);
-    setTasks(newTasks);
   };
 
   return (
@@ -42,17 +31,18 @@ function TodoList() {
       <div className="todo-input">
         <input
           type="text"
-          placeholder="Enter task..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          placeholder="Enter task..."
+          onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
         />
-        <button onClick={addTask}>Add</button>
+        <button onClick={handleAdd}>Add</button>
       </div>
       <ul className="todo-list">
-        {tasks.map((task, index) => (
-          <li key={index} className={task.completed ? 'completed' : ''}>
-            <span onClick={() => toggleComplete(index)}>{task.text}</span>
-            <button onClick={() => deleteTask(index)}>❌</button>
+        {tasks.map((task, i) => (
+          <li key={i} className={task.completed ? 'completed' : ''}>
+            <span onClick={() => dispatch(toggleComplete(i))}>{task.text}</span>
+            <button onClick={() => dispatch(deleteTask(i))}>❌</button>
           </li>
         ))}
       </ul>
