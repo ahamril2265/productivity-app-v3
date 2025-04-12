@@ -11,6 +11,7 @@ import Calculator from './pages/Calculator';
 import Notes from './pages/Notes';
 import TodoList from './pages/TodoList';
 import Profile from './pages/Profile';
+import Weather from './pages/Weather';
 
 import './App.css';
 
@@ -41,6 +42,7 @@ function App() {
               <Route path="/notes" element={<Notes />} />
               <Route path="/todo" element={<TodoList />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/weather" element={<Weather />} />
             </Routes>
           </div>
         </div>

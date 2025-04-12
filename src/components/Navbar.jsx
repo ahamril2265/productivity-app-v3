@@ -12,6 +12,8 @@ function Navbar() {
         <NavLink to="/calculator" className="nav-link">Calculator</NavLink>
         <NavLink to="/notes" className="nav-link">Notes</NavLink>
         <NavLink to="/todo" className="nav-link">To-Do List</NavLink>
+        <NavLink to="/weather" className="nav-link">Weather</NavLink>
+        <NavLink to="/profile" className="nav-link">Profile</NavLink>
       </nav>
     </div>
   );
