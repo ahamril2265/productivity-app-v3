@@ -6,10 +6,19 @@ import {
   setError,
   clearWeather,
 } from '../redux/slices/weatherSlice';
+import { useMap } from 'react-leaflet';
 
 import './Weather.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
+
+
+function RecenterMap({ lat, lon }) {
+  const map = useMap();
+  map.setView([lat, lon], 10); // Recenters map to new lat/lon with zoom 10
+  return null;
+}
+
 
 function Weather() {
   const dispatch = useDispatch();
@@ -46,6 +55,7 @@ function Weather() {
         placeholder="Enter city name..."
         value={city}
         onChange={(e) => dispatch(setCity(e.target.value))}
+        onKeyDown={(e) => e.key === 'Enter' && fetchWeather()}
       />
       <button onClick={fetchWeather}>Get Weather</button>
       <button onClick={() => dispatch(clearWeather())}>Clear</button>
@@ -68,6 +78,8 @@ function Weather() {
               scrollWheelZoom={false}
               style={{ height: '300px', width: '100%', borderRadius: '8px' }}
             >
+              <RecenterMap lat={weatherData.coord.lat} lon={weatherData.coord.lon} />
+
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; OpenStreetMap contributors'
