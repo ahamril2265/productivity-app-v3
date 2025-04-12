@@ -1,24 +1,51 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import Navbar from './components/Navbar';
+import DarkModeToggle from './components/DarkModeToggle';
+import ProfileButton from './components/ProfileButton';
+
+import Home from './pages/Home';
+import GuessGame from './pages/GuessGame';
+import Calculator from './pages/Calculator';
+import Notes from './pages/Notes';
+import TodoList from './pages/TodoList';
+import Profile from './pages/Profile';
+
 import './App.css';
 
 function App() {
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('theme') === 'dark';
+  });
+
+  useEffect(() => {
+    document.body.className = darkMode ? 'dark' : '';
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className={`app-container ${darkMode ? 'dark' : ''}`}>
+        <Navbar />
+        <div className="main-content">
+          <div className="top-bar">
+            <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+            <ProfileButton />
+          </div>
+          <div className="page-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/guess" element={<GuessGame />} />
+              <Route path="/calculator" element={<Calculator />} />
+              <Route path="/notes" element={<Notes />} />
+              <Route path="/todo" element={<TodoList />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </div>
+        </div>
+      </div>
+    </Router>
   );
 }
 
