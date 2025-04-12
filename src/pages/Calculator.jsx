@@ -27,7 +27,6 @@ function Calculator() {
 
   const computeExpression = (exp) => {
     const tokens = exp.split(/([+\-*/])/).filter(Boolean);
-    let stack = [];
     let current = parseFloat(tokens[0]);
 
     for (let i = 1; i < tokens.length; i += 2) {
